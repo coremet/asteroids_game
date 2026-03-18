@@ -2,6 +2,8 @@ import pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from logger import log_state
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     pygame.init()
@@ -14,19 +16,20 @@ def main():
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
 
-    # grouped objects that can be updated
+    # groups
     updatable = pygame.sprite.Group()
-
-    # grouped objectst that can be drawn
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
 
-    # Player is the name of the class, not an instance of it
-    # (This must be done before any Player objects are created)
+    # static containers - Player is the name of the class, not an instance of it and this must be done before any Player objects are create
     Player.containers = (updatable, drawable)
-    
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+
     x = SCREEN_WIDTH / 2
     y = SCREEN_HEIGHT / 2
     player = Player(x, y)
+    asteroidfield = AsteroidField()
 
     # game loop
     while True:
@@ -36,7 +39,7 @@ def main():
                 return
         dt = clock.tick(60) / 1000
         updatable.update(dt)
-        
+                
         # rendering
         screen.fill(color)
         for instance in drawable:
